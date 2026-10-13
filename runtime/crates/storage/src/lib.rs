@@ -26,6 +26,7 @@ impl Pool {
         conn.pragma_update(None, "foreign_keys", "ON")
             .map_err(|e| StorageError::Sqlite(e.to_string()))?;
         migrations::run(&conn)?;
+        migrations::verify_final_schema(&conn)?;
         Ok(Self { conn: Mutex::new(conn) })
     }
 
@@ -36,6 +37,7 @@ impl Pool {
         conn.pragma_update(None, "foreign_keys", "ON")
             .map_err(|e| StorageError::Sqlite(e.to_string()))?;
         migrations::run(&conn)?;
+        migrations::verify_final_schema(&conn)?;
         Ok(Self { conn: Mutex::new(conn) })
     }
 
