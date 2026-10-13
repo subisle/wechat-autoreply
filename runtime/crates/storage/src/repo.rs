@@ -84,7 +84,9 @@ pub fn claim_next_job(tx: &Connection) -> Result<Option<(String, String, Option<
     let mut stmt = tx
         .prepare(
             "UPDATE outbox_jobs SET status='running', attempts=attempts+1, updated_at=strftime('%s','now')
-             WHERE job_id = (SELECT job_id FROM outbox_jobs WHERE status='pending'
+             WHERE job_id = (SELECT job_id FROM outbox_jobs
+                             WHERE status='pending'
+                                OR (status='retry_wait' AND next_run_at <= strftime('%s','now'))
                              ORDER BY priority ASC, created_at ASC LIMIT 1)
              RETURNING job_id, job_type, aggregate_id, idempotency_key",
         )
@@ -106,18 +108,30 @@ pub fn claim_next_job(tx: &Connection) -> Result<Option<(String, String, Option<
 
 pub fn complete_job(tx: &Connection, job_id: &str) -> Result<(), StorageError> {
     tx.execute(
-        "UPDATE outbox_jobs SET status='done', updated_at=strftime('%s','now') WHERE job_id=?1",
+        "UPDATE outbox_jobs SET status='succeeded', updated_at=strftime('%s','now') WHERE job_id=?1",
         rusqlite::params![job_id],
     )
     .map_err(|e| StorageError::Sqlite(e.to_string()))?;
     Ok(())
 }
 
+/// 失败 → retry_wait（有限退避）或 dead_letter（达上限）——11 §3 状态机
 pub fn fail_job(tx: &Connection, job_id: &str, error: &str) -> Result<(), StorageError> {
     tx.execute(
-        "UPDATE outbox_jobs SET status='failed', error=?2, updated_at=strftime('%s','now') WHERE job_id=?1",
-        rusqlite::params![job_id, error],
+        "UPDATE outbox_jobs SET
+           status = CASE WHEN attempts >= max_attempts THEN 'dead_letter' ELSE 'retry_wait' END,
+           error = ?2,
+           next_run_at = CASE WHEN attempts < max_attempts
+                         THEN strftime('%s','now') + MIN(?3 * ?3 * 30, 3600)
+                         ELSE NULL END,
+           updated_at = strftime('%s','now')
+         WHERE job_id=?1",
+        rusqlite::params![job_id, error, 5i64],
     )
     .map_err(|e| StorageError::Sqlite(e.to_string()))?;
     Ok(())
 }
+
+/// 领取任务时只取 pending 或退避到期的 retry_wait
+pub const CLAIM_SQL: &str =
+    "WHERE status='pending' OR (status='retry_wait' AND next_run_at <= strftime('%s','now'))";

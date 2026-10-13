@@ -81,8 +81,12 @@ CREATE TABLE outbox_jobs (
   job_type TEXT NOT NULL,
   aggregate_id TEXT,
   idempotency_key TEXT UNIQUE,
-  status TEXT NOT NULL DEFAULT 'pending',
+  input_hash TEXT,
+  status TEXT NOT NULL DEFAULT 'pending'
+    CHECK (status IN ('pending','running','succeeded','retry_wait','dead_letter')),
   attempts INTEGER NOT NULL DEFAULT 0,
+  max_attempts INTEGER NOT NULL DEFAULT 5,
+  next_run_at INTEGER,
   priority INTEGER NOT NULL DEFAULT 100,
   error TEXT,
   created_at INTEGER NOT NULL, updated_at INTEGER NOT NULL

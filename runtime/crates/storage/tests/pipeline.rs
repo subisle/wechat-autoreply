@@ -102,3 +102,50 @@ fn migrations_idempotent() {
     let pool = Pool::open_in_memory().unwrap();
     pool.with(|c| storage::migrations::run(c)).unwrap(); // 再跑一次：应全部跳过
 }
+
+// 11 §3：retry_wait → dead_letter 状态机
+#[test]
+fn fail_job_retries_then_dead_letter() {
+    let pool = Pool::open_in_memory().unwrap();
+    pool.tx(|tx| storage::record_event_with_jobs(tx, &ev(Some("srv_9"), 1760329299), &jobs_for("srv_9"), None)).unwrap();
+
+    // 连续失败 4 次 → 仍在 retry_wait（每轮把退避到期时间置 0，模拟等待退避结束）
+    for i in 0..4 {
+        let claimed = pool.tx(|tx| storage::claim_next_job(tx))
+            .unwrap()
+            .unwrap_or_else(|| panic!("第{}次 claim 应成功", i + 1));
+        pool.tx(|tx| storage::fail_job(tx, &claimed.0, "模拟失败")).unwrap();
+        pool.with(|c| {
+            c.execute("UPDATE outbox_jobs SET next_run_at=0 WHERE idempotency_key='mem:srv_9'", [])
+                .map_err(|e| storage::StorageError::Sqlite(e.to_string()))?;
+            Ok(())
+        }).unwrap();
+    }
+    pool.with(|c| {
+        let st: String = c.query_row("SELECT status FROM outbox_jobs WHERE idempotency_key='mem:srv_9'", [], |r| r.get(0)).unwrap();
+        assert_eq!(st, "retry_wait", "未达上限应进 retry_wait");
+        let attempts: i64 = c.query_row("SELECT attempts FROM outbox_jobs WHERE idempotency_key='mem:srv_9'", [], |r| r.get(0)).unwrap();
+        assert_eq!(attempts, 4);
+        Ok(())
+    }).unwrap();
+
+    // 第 5 次失败 → dead_letter（置 next_run_at=0 绕过退避期）
+    pool.with(|c| {
+        c.execute("UPDATE outbox_jobs SET next_run_at=0 WHERE idempotency_key='mem:srv_9'", [])
+            .map_err(|e| storage::StorageError::Sqlite(e.to_string()))?;
+        let (st, attempts, maxa): (String, i64, i64) = c.query_row(
+            "SELECT status, attempts, max_attempts FROM outbox_jobs WHERE idempotency_key='mem:srv_9'",
+            [], |r| Ok((r.get(0)?, r.get(1)?, r.get(2)?))).unwrap();
+        assert_eq!((st.as_str(), attempts, maxa), ("retry_wait", 4, 5), "领取前状态确认");
+        Ok(())
+    }).unwrap();
+    let claimed = pool.tx(|tx| storage::claim_next_job(tx))
+        .unwrap()
+        .unwrap_or_else(|| panic!("第5次应可领取：状态已确认 retry_wait 且 next_run_at=0"));
+    pool.tx(|tx| storage::fail_job(tx, &claimed.0, "第5次失败")).unwrap();
+    pool.with(|c| {
+        let st: String = c.query_row("SELECT status FROM outbox_jobs WHERE idempotency_key='mem:srv_9'", [], |r| r.get(0)).unwrap();
+        assert_eq!(st, "dead_letter", "达上限应进 dead_letter 交人工");
+        Ok(())
+    }).unwrap();
+}
