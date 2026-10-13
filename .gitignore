@@ -1,0 +1,8 @@
+target/
+.build/
+.decrypted/
+*.db
+*.db-wal
+*.db-shm
+data/
+.DS_Store
