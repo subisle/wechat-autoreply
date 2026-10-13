@@ -1,0 +1,77 @@
+{
+  "autoBufferWriteFunc": "0x3E7FA8C",
+  "blrX8Addr": "0x3e58f0c",
+  "buf2RespAddr": "0x3e7e670",
+  "cdnGetServiceAddr": "0x50a15d0",
+  "cdnManagerGetterAddr": "0x5259290",
+  "cndOnCompleteAddr": "0x3E1575C",
+  "module": "/Applications/WeChat.app/Contents/Resources/wechat.dylib",
+  "offsetStatus": {
+    "profilePhoneCopyFunction": "not_verified_not_required_for_read_path",
+    "profileReader": "local_verified",
+    "upstreamSendRecvMedia": "from_upstream_equal_local"
+  },
+  "profileOffsets": {
+    "profileReader": {
+      "entryBytes": "ff c3 00 d1 f4 4f 01 a9 fd 7b 02 a9 fd 83 00 91",
+      "lateFill": true,
+      "module": "/Applications/WeChat.app/Contents/Resources/wechat.dylib",
+      "note": "Upstream wechat_chatter has send/recv/media offsets only. profileReader+layout are local verified extensions. Phone/city/province/platform may be empty on first hit (late fill).",
+      "offset": "0x3ecc790",
+      "pattern": "ff c3 00 d1 f4 4f 01 a9 fd 7b 02 a9 fd 83 00 91 f3 03 08 aa ?? ?? ?? ?? ?? ?? ?? ?? 08 00 40 f9 09 35 40 f9",
+      "phoneFieldOffset": "0xb0",
+      "phoneFieldVerified": true,
+      "sourceArtifact": "artifacts/profile_reader_pause_probe/20260719_172212/events.jsonl",
+      "sourceArtifactPhone": "artifacts/phone_lite_probe/20260719_175319/events.jsonl",
+      "trigger": "login complete / main UI; re-read until phone filled or timeout",
+      "verified": true,
+      "verifiedFields": {
+        "alias": "cs_php",
+        "city": "Southern",
+        "country": "CN",
+        "nickname": "子子",
+        "phone": "13354463148",
+        "platform": "android",
+        "province": "HK",
+        "wxid": "wxid_0123456789abc"
+      }
+    },
+    "profileStructLayout": {
+      "alias": "0x80",
+      "city": "0x100",
+      "country": "0x140",
+      "nickname": "0x98",
+      "phone": "0xb0",
+      "platform": "0x180",
+      "province": "0x118",
+      "wxid": "0x68"
+    }
+  },
+  "profilePhoneLateFill": true,
+  "profileReaderAddr": "0x3ecc790",
+  "profileReaderEntryBytes": "ff c3 00 d1 f4 4f 01 a9 fd 7b 02 a9 fd 83 00 91",
+  "profileReaderPattern": "ff c3 00 d1 f4 4f 01 a9 fd 7b 02 a9 fd 83 00 91 f3 03 08 aa ?? ?? ?? ?? ?? ?? ?? ?? 08 00 40 f9 09 35 40 f9",
+  "profileStructLayout": {
+    "alias": "0x80",
+    "city": "0x100",
+    "country": "0x140",
+    "nickname": "0x98",
+    "phone": "0xb0",
+    "platform": "0x180",
+    "province": "0x118",
+    "wxid": "0x68"
+  },
+  "req2bufEnterAddr": "0x3e58e8c",
+  "req2bufExitAddr": "0x3E59DE0",
+  "sendFuncAddr": "0x5120fd8",
+  "sources": {
+    "localProfile": "runtime verified 2026-07-19",
+    "upstream": "https://github.com/yincongcyincong/wechat_chatter/blob/main/wechat_version/4_1_11_53_mac.json"
+  },
+  "uploadGetCallbackWrapperAddr": "0x525ab20",
+  "uploadGetCallbackWrapperFuncAddr": "0x3E14FF8",
+  "uploadImageAddr": "0x529bd7c",
+  "uploadOnCompleteAddr": "0x525B2D8",
+  "uploadOnCompleteFuncAddr": "0x3E1617C",
+  "wechatFullVersion": "4.1.11.53"
+}

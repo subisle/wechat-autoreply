@@ -1,0 +1,15 @@
+{
+	"sendFuncAddr": "0x5121458",
+	"req2bufEnterAddr": "0x3e59318",
+	"req2bufExitAddr": "0x3e5a42c",
+	"buf2RespAddr": "0x3e7eafc",
+	"blrX8Addr": "0x3e59398",
+	"autoBufferWriteFunc": "0x3e80164",
+	"uploadImageAddr": "0x529c1fc",
+	"cndOnCompleteAddr": "0x3e15bd8",
+	"uploadGetCallbackWrapperAddr": "0x525afa0",
+	"uploadGetCallbackWrapperFuncAddr": "",
+	"uploadOnCompleteAddr": "",
+	"uploadOnCompleteFuncAddr": "",
+	"profileReaderAddr": ""
+}

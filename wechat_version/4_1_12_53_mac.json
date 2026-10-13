@@ -1,0 +1,139 @@
+{
+  "structVer": "2",
+  "wechatFullVersion": "4.1.12.53",
+  "module": "/Applications/WeChat.app/Contents/Resources/wechat.dylib",
+  "sendFuncAddr": "0x53e4ecc",
+  "sendFuncAddrEntryBytes": "ff 03 05 d1 fc 6f 11 a9 f4 4f 12 a9 fd 7b 13 a9",
+  "req2bufEnterAddr": "0x413e9b4",
+  "req2bufEnterAddrEntryBytes": "09 0f 46 f8 c9 01 00 b4 e8 03 18 aa 2a 21 40 b9",
+  "req2bufExitAddr": "0x413f87c",
+  "req2bufExitAddrEntryBytes": "fc 6f c6 a8 c0 03 5f d6 e0 8b 40 f9 e8 93 40 f9",
+  "buf2RespAddr": "0x4163f4c",
+  "buf2RespAddrEntryBytes": "3c 00 80 52 e0 c3 00 91 bf 03 00 94 e0 23 01 91",
+  "blrX8Addr": "0x413ea34",
+  "blrX8AddrEntryBytes": "e4 e3 04 91 00 01 3f d6 e8 03 02 91 40 e5 05 4f",
+  "autoBufferWriteFunc": "0x4165368",
+  "autoBufferWriteFuncEntryBytes": "f6 57 bd a9 f4 4f 01 a9 fd 7b 02 a9 fd 83 00 91",
+  "uploadImageAddr": "0x5570098",
+  "uploadImageAddrEntryBytes": "fc 6f ba a9 fa 67 01 a9 f8 5f 02 a9 f6 57 03 a9",
+  "cdnGetServiceAddr": "0x53a7ac8",
+  "cdnManagerGetterAddr": "0x551c1bc",
+  "cndOnCompleteAddr": "0x40fad60",
+  "cndOnCompleteAddrEntryBytes": "f8 5f bc a9 f6 57 01 a9 f4 4f 02 a9 fd 7b 03 a9",
+  "uploadGetCallbackWrapperAddr": "0x551da24",
+  "uploadGetCallbackWrapperAddrEntryBytes": "08 09 40 f9 e1 03 15 aa e2 03 14 aa e3 03 13 aa",
+  "uploadGetCallbackWrapperFuncAddr": "0x40fa5fc",
+  "uploadGetCallbackWrapperFuncAddrEntryBytes": "00 20 00 d1 1a ff ff 17 ff 83 03 d1 f8 5f 0a a9",
+  "uploadOnCompleteFuncAddr": "0x40fb780",
+  "uploadOnCompleteFuncAddrEntryBytes": "00 20 00 d1 77 fd ff 17 fc 6f ba a9 fa 67 01 a9",
+  "uploadOnCompleteAddr": "0x551e0e4",
+  "uploadOnCompleteAddrEntryBytes": "08 19 40 f9 e1 03 13 aa e2 03 15 aa 00 01 3f d6",
+  "profileReaderAddr": "0x41761fc",
+  "profileReaderAddrEntryBytes": "ff c3 00 d1 f4 4f 01 a9 fd 7b 02 a9 fd 83 00 91",
+  "profileReaderEntryBytes": "ff c3 00 d1 f4 4f 01 a9 fd 7b 02 a9 fd 83 00 91",
+  "profileReaderPattern": "ff c3 00 d1 f4 4f 01 a9 fd 7b 02 a9 fd 83 00 91 f3 03 08 aa ?? ?? ?? ?? ?? ?? ?? ?? 08 00 40 f9 09 35 40 f9",
+  "profileStructLayout": {
+    "wxid": "0x68",
+    "alias": "0x80",
+    "nickname": "0x98",
+    "phone": "0xb0",
+    "city": "0x100",
+    "province": "0x118",
+    "country": "0x140",
+    "platform": "0x180"
+  },
+  "searchAddFriendOffsets": {
+    "note": "运行时验证 2026-09-24/25 (Stalker diff + 两次崩溃栈 + IDA xref), WeChat macOS 4.1.12.53 arm64",
+    "searchContactsFunc": {
+      "offset": "0xc3e0a4",
+      "role": "DoSearchContacts 搜索触发(UI点击必经), 上层调用者 0xc3df90"
+    },
+    "queryContactInfoFunc": {
+      "offset": "0xc9d5c8",
+      "role": "QueryContactInfo"
+    },
+    "addFriendUiHandler": {
+      "offset": "0xc93454",
+      "role": "添加到通讯录按钮 handler (函数 sub_C930F8 内)"
+    },
+    "verifyFriendFunc": {
+      "offset": "0x1abaf68",
+      "role": "VerifyFriend 任务构造: 入参结构体 a2: +0 user_name(v3票据,SSO) +40 str +72 str +96 scene(dword) +104 buf; 分流 sub_1ABB3B8 / sub_1ABBC5C"
+    },
+    "verifyWeChatFriendFunc": {
+      "offset": "0x1abbc5c",
+      "role": "VerifyWeChatFriend 发送路径, 日志 'Verify friend scene:'"
+    },
+    "verifyFriendV4Func": {
+      "offset": "0x1abcc94",
+      "role": "verify with v4 ticket (x5=v4_...), OpenIM 分支, 调用 0x1ac0aa4 → 0x3a90228 服务层"
+    },
+    "verifyServiceSubmit": {
+      "offset": "0x1ac0a60",
+      "role": "verify 服务提交函数"
+    },
+    "addFriendWindowFuncs": [
+      "0xc3c698",
+      "0xc40d20"
+    ],
+    "searchChannel": "searchcontact 请求不走 mars sendFunc(0x53e4ecc)/req2buf, 走 mmcronet/QUIC; cmdid=34 (二进制 functionlist XML)",
+    "tickets": {
+      "v3": "v3_020b3826fd03... (search 响应, AddFriendCommand.v3)",
+      "v4": "v4_000b708f0b04... (verify 阶段)"
+    },
+    "sourceArtifacts": [
+      "artifacts/search_add_friend/v2_events.jsonl",
+      "artifacts/ida/addfriend_decompiled.md",
+      "artifacts/ida/anchor_xrefs_4112.json"
+    ],
+    "doSearchContactsArgs": {
+      "x1": "QString (UTF-16) 搜索关键字, 数据在 [x1+0], 运行时验证: 两轮随机手机号均在 x1+mem+0 命中",
+      "x0": "上下文对象, 关键字副本在 x0+552",
+      "x2/x3": "关联结构, 关键字在 +128",
+      "verifiedRounds": [
+        {
+          "needle": "13318068349",
+          "located": [
+            "x0+mem+552",
+            "x1+mem+0",
+            "x2+mem+128",
+            "x3+mem+128",
+            "x19+mem+552",
+            "x20+mem+0"
+          ]
+        },
+        {
+          "needle": "17767157675",
+          "located": [
+            "x0+mem+552",
+            "x1+mem+0",
+            "x2+mem+128",
+            "x3+mem+128",
+            "x19+mem+552",
+            "x20+mem+0"
+          ]
+        }
+      ],
+      "source": "artifacts/search_add_friend/auto_find_events.jsonl + auto_drive.log"
+    },
+    "nativeSearchTrigger": {
+      "call": "sub_C3E0A4(a1, keyword)",
+      "recipe": "1 次 UI 点击校准(抓 a1) → N 次 rpc 纯 hook 调用",
+      "a1": "AddFriendWindow 搜索控制器, 断点 x0 抓取, 窗口存续期稳定 (实测 0x75e028c00)",
+      "keyword": "libc++ std::string ALTERNATE SSO: 数据[0..22], 长度=byte[23]>>1 (写入 len<<1)",
+      "dispatch": "dispatch_async_f(_dispatch_main_q, ctx, cb) 派发到微信主线程执行 — 必须! frida 线程直调在陌生人搜索(网络服务虚表+104/+48)处确定性 access violation",
+      "verified": "2026-09-25 02:13: 校准 15176982408 后连续 3 次纯 hook 调用 (15135053267/18035092777/18512200509) 全部断点命中、零崩溃",
+      "prereqs": [
+        "调用前 doCall 内先 sub_C3DFF0(a1) 清旧结果",
+        "写 a1+552 关键字缓存 (UI 结果面板联动)"
+      ],
+      "tools": [
+        "search_auto_probe.js (rpc: setneedle/seta1/setmode/triggersearch/sethijackkw/scanv3/neighbors)",
+        "recipe_test.py (配方验证)",
+        "hook_search.py (单次调用)",
+        "extract_result.py (结果数据提取)"
+      ],
+      "resultsExtraction": "搜索结果: scanv3 v3_/v1_ 差集(陌生人新票据) + 模式扫描(已有联系人 alias+v3 相邻存放)"
+    }
+  }
+}

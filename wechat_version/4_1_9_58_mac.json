@@ -1,0 +1,74 @@
+{
+	"textCallbackFuncAddr": "0x2698614",
+	"imageCallbackFuncAddr": "0x268efd8",
+	"videoCallbackFuncAddr": "0x26fe584",
+	"replyCallbackFuncAddr": "0x262d024",
+	"voiceCallbackFuncAddr": "0x31cd7cc",
+
+	"sendFuncAddr": "0x4bf1b44",
+	"req2bufEnterAddr": "0x39f18e0",
+	"req2bufExitAddr": "0x39f29f4",
+	"buf2RespAddr": "0x3a17308",
+	"blrX8Addr": "0x39F1960",
+	"autoBufferWriteFunc": "0x3A18970",
+
+	"uploadImageAddr": "0x4d6c8f8",
+	"cndOnCompleteAddr": "0x39adf14",
+	"uploadGetCallbackWrapperAddr": "0x4d2b650",
+	"uploadGetCallbackWrapperFuncAddr": "0x39AD760",
+	"uploadOnCompleteAddr": "0x4D2BE08",
+	"uploadOnCompleteFuncAddr": "0x39AE944",
+
+	"profileReaderAddr": "0x413c7bc",
+	"profileReaderEntryBytes": "ff c3 00 d1 f4 4f 01 a9 fd 7b 02 a9 fd 83 00 91",
+	"profileReaderPattern": "ff c3 00 d1 f4 4f 01 a9 fd 7b 02 a9 fd 83 00 91 f3 03 08 aa ?? ?? ?? ?? 08 00 40 f9 09 35 40 f9",
+	"profileStructLayout": {
+		"wxid": "0x68",
+		"alias": "0x80",
+		"nickname": "0x98",
+		"phone": "0xb0",
+		"city": "0x100",
+		"province": "0x118",
+		"country": "0x140",
+		"platform": "0x180"
+	},
+
+	"profileOffsets": {
+		"profileReader": {
+			"module": "/Applications/WeChat.app/Contents/Resources/wechat.dylib",
+			"offset": "0x413c7bc",
+			"entryBytes": "ff c3 00 d1 f4 4f 01 a9 fd 7b 02 a9 fd 83 00 91",
+			"pattern": "ff c3 00 d1 f4 4f 01 a9 fd 7b 02 a9 fd 83 00 91 f3 03 08 aa ?? ?? ?? ?? 08 00 40 f9 09 35 40 f9",
+			"trigger": "login complete / main UI warm attach, no profile UI",
+			"sourceArtifact": "artifacts/profile_candidate_reader_trace/20260706_153948/events.jsonl",
+			"verified": true,
+			"note": "Function returns a shared_ptr-like pair through x8 out-param. [x8_out+0x8] points to profile data; profile_base = [x8_out+0x8] - 0x8."
+		},
+		"profileStructLayout": {
+			"wxid": "0x68",
+			"alias": "0x80",
+			"nickname": "0x98",
+			"phone": "0xb0",
+			"city": "0x100",
+			"province": "0x118",
+			"country": "0x140",
+			"platform": "0x180"
+		},
+		"nicknameCopyCaller": "0x49352c8",
+		"nicknameCallerChain": [
+			"0x49352c8",
+			"0x493c9ec",
+			"0x38fac64",
+			"0x413ce30",
+			"0x3516fec",
+			"0x582ca0c",
+			"0x58263ac"
+		],
+		"sourceArtifact": "artifacts/fresh_login_copytrace/20260706_004521_nickname_offsets/events.jsonl",
+		"sourceLines": [30, 32],
+		"trigger": "fresh login / enter WeChat after local login state",
+		"module": "/Applications/WeChat.app/Contents/Resources/wechat.dylib",
+		"needsReplay": true,
+		"note": "Captured from memcpy/memmove src length=6 containing nickname bytes. Use as candidate until reproduced on a clean launch."
+	}
+}
